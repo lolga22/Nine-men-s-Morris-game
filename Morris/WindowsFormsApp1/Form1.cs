@@ -1,30 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-
         private Button[] boardButtons;
 
         public Form1()
         {
             InitializeComponent();
             InitializeBoard();
-           
         }
-
 
         private void InitializeBoard()
         {
@@ -37,7 +27,6 @@ namespace WindowsFormsApp1
             {
                 for (int j = 0; j < 7; j++)
                 {
-
 
                     if (!deleteButtons.Contains(q))
                     {
@@ -56,13 +45,13 @@ namespace WindowsFormsApp1
                 }
 
             }
+
+
         }
 
         List<int> player1btns = new List<int>() { };
 
         List<int> player2btns = new List<int>() { };
-
-        //List<int> victoryBtns = new List<int>() {1,4,7};
 
         int[,] victoryBtns = { { 1, 4, 7 }, { 1, 22, 43 }, {43, 46, 49}, {7, 28, 49},
                          { 9,11,13}, { 9, 23, 37}, {37, 39, 41}, {41 , 27, 13},
@@ -73,80 +62,100 @@ namespace WindowsFormsApp1
 
 
         int schetchik = 0;
+        public bool a = true;
         private void BoardButton_Click(object sender, EventArgs e)
         {
-
-            
-            // Обработка клика по кнопке на игровом поле
-            Button clickedButton = (Button)sender;
-           
-
-            // Пример: меняем цвет кнопки при клике
-            if (schetchik % 2 == 0)
+            if (a == true)
             {
 
-                clickedButton.BackColor = Color.DarkBlue;
+                // Обработка клика по кнопке на игровом поле
+                Button clickedButton = (Button)sender;
+
+
+                // Пример: меняем цвет кнопки при клике
+                if (schetchik % 2 == 0)
+                {
+
+                    clickedButton.BackColor = Color.DarkBlue;
+                    clickedButton.Enabled = false;
+                }
+                else
+                    clickedButton.BackColor = Color.DarkRed;
                 clickedButton.Enabled = false;
+
+
+                if (schetchik % 2 == 0)
+                {
+                    player1btns.Add(Int32.Parse(clickedButton.Name));
+
+                    Console.WriteLine("кнопки первого игрока: ");
+                    for (int i = 0; i < player1btns.Count; i++)
+                        Console.WriteLine(player1btns[i]);
+                }
+                else
+                {
+                    player2btns.Add(Int32.Parse(clickedButton.Name));
+
+                    Console.WriteLine("кнопки второго игрока: ");
+                    for (int i = 0; i < player2btns.Count; i++)
+                        Console.WriteLine(player2btns[i]);
+                }
+
+                schetchik++;
+                label1.Text = ("Ход игрока:" + (schetchik % 2 + 1));
+                label2.Text = ("ход:" + schetchik);
+
+                //вычисление победы 1
+                int[] player1 = player1btns.ToArray();
+                int[] pere = new int[3];
+                var rez = player1.Intersect(pere);
+                int t = 0;
+
+                for (int i = 0; i < victoryBtns.GetLength(0); i++)
+                {
+                    t = 0;
+                    pere[0] = victoryBtns[i, 0];
+                    pere[1] = victoryBtns[i, 1];
+                    pere[2] = victoryBtns[i, 2];
+                    rez = player1.Intersect(pere);
+
+                    foreach (int s in rez) t++;
+                    if (t == 3)
+                    {
+                        Console.WriteLine("победил игрок 1");
+                        a = false;
+                        label1.Text = ("победил игрок 1");
+
+                    }
+
+                }
+
+                int[] player2 = player2btns.ToArray();
+                int[] pere2 = new int[3];
+                var rez2 = player2.Intersect(pere2);
+                int y = 0;
+
+                for (int i = 0; i < victoryBtns.GetLength(0); i++)
+                {
+                    y = 0;
+                    pere2[0] = victoryBtns[i, 0];
+                    pere2[1] = victoryBtns[i, 1];
+                    pere2[2] = victoryBtns[i, 2];
+                    rez2 = player2.Intersect(pere2);
+
+                    foreach (int s in rez2) y++;
+                    if (y == 3)
+                    {
+                        Console.WriteLine("победил игрок 2");
+                        a = false;
+                        label1.Text = ("победил игрок 2");
+
+                    }
+
+                }
+
             }
-            else
-                clickedButton.BackColor = Color.DarkRed;
-                clickedButton.Enabled = false;
-
-
-            if (schetchik % 2 == 0)
-            {
-                player1btns.Add(Int32.Parse(clickedButton.Name));
-
-                Console.WriteLine("кнопки первого игрока: ");
-                for (int i = 0; i < player1btns.Count; i++)
-                    Console.WriteLine(player1btns[i]);
-            }
-            else
-            {
-                player2btns.Add(Int32.Parse(clickedButton.Name));
-
-                Console.WriteLine("кнопки второго игрока: ");
-                for (int i = 0; i < player2btns.Count; i++)
-                    Console.WriteLine(player2btns[i]);
-            }
-
-            schetchik++;
-            label1.Text = ("Ход игрока:" + (schetchik % 2 + 1));
-            label2.Text = ("ход:" + schetchik);
-
-            //вычисление победы
-            int []player1 = player1btns.ToArray();
-            int[] pere = new int[3];
-            var rez = player1.Intersect(pere);
-            int t = 0;
-
-            for (int i = 0; i < victoryBtns.GetLength(0); i++)
-            {
-
-                pere[0] = victoryBtns[i, 0];
-                pere[1] = victoryBtns[i, 1];
-                pere[2] = victoryBtns[i, 2];
-                rez = player1.Intersect(pere);
-                foreach (int s in rez) t++;
-                if (t == 3) Console.WriteLine("победил игрок 1");
-                //  ДОДЕЛАТЬ
-            }
-            //var result1 = player1btns.Intersect(victoryBtns);
-            //int w = 0;
-
-            //foreach (int s in result1) w++;
-            //if (w == 3) Console.WriteLine("победил игрок 1");
-
-            //var result2 = player2btns.Intersect(victoryBtns);
-            //int r = 0;
-
-            //foreach (int s in result2) r++;
-            //if (r == 3) Console.WriteLine("победил игрок 2");
-
-
-
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -156,6 +165,5 @@ namespace WindowsFormsApp1
         {
             Application.Restart();
         }
-
     }
 }
